@@ -1,93 +1,46 @@
-import {
-  Button,
-  FormLabel,
-  Grid,
-  IconButton,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
-import React, { useState } from "react";
+import {Button,FormLabel,Grid,IconButton,MenuItem,Select,Switch,TextField,} from "@mui/material";
+import React from "react";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import FaxIcon from "@mui/icons-material/Fax";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 
-function AddContact(props) {
-  const [contact, setContact] = useState([
-    {
-      firstName: "",
-      lastName: "",
-      position: "",
-      contactMethods: [
-        { contactMethodType: "", code: "", contactDetail: "" },
-        { contactMethodType: "", code: "", contactDetail: "" },
-      ],
-    },
-  ]);
-  const handleContactChange = (contactIndex, e) => {
-    const contactValues = [...contact];
-    contactValues[contactIndex][e.target.name] = e.target.value;
-    // dispatch({type:"setContact",payload:contactValues})
-    setContact(contactValues);
-  };
-  const handleContactMethodChange = (contactIndex, contactMethodIndex, e) => {
-    const contactMethodValues = [...contact[contactIndex].contactMethods];
-    contactMethodValues[contactMethodIndex][e.target.name] = e.target.value;
-    const newContact = [...contact];
-    newContact[contactIndex] = {
-      ...newContact[contactIndex],
-      contactMethods: contactMethodValues,
-    };
-    // dispatch({type:"setContact",payload:newContact})
-    setContact(newContact);
-  };
-  let addContactMethod = (contactIndex, contactMethodIndex) => {
-    const newContactMethod = [
-      ...contact[contactIndex].contactMethods,
-      { contactMethodType: "", code: "", contactDetail: "" },
-    ];
-    const newContact = [...contact];
-    newContact[contactIndex] = {
-      ...newContact[contactIndex],
-      contactMethods: newContactMethod,
-    };
+function AddContact({addContactFields,addContactMethod,removeContactField,removeContactMethod,handleContactChange,handleContactMethodChange,contacts}) {
 
-    // dispatch({type:"setContact",payload:newContact})
-    setContact(newContact);
-  };
+  const label = { inputProps: { 'aria-label': 'Switch demo' }};
 
-  let removeContactMethod = (contactIndex, contactMethodIndex) => {
-    const newContactMethod = [...contact[contactIndex].contactMethods];
-    newContactMethod.splice(contactMethodIndex, 1);
-    const newContact = [...contact];
-    newContact[contactIndex] = {
-      ...newContact[contactIndex],
-      contactMethods: newContactMethod,
-    };
-    //   dispatch({type:"setContact",payload:newContact})
-    setContact(newContact);
-  };
-  const addContactFields=()=>{
-    // dispatch({type:"setContact",payload:[...state.contact,{firstName:"",lastName:"",position:"",contactMethods:[{ contactMethodType: "", code : "",contactDetail:""},{ contactMethodType: "", code : "",contactDetail:""}]}]})
-    setContact(prev=>[...prev,{firstName:"",lastName:"",position:"",contactMethods:[{ contactMethodType: "", code : "",contactDetail:""},{ contactMethodType: "", code : "",contactDetail:""}]}])       
-  }
   return (
     <>
-      {contact.map((element, contactIndex) => {
+    {/* contact field code start */}
+      {contacts.map((contact, contactIndex) => {
         return (
          
-            <Grid container display={"flex"} spacing={2} key={contactIndex}>
-              <Grid item sm={12}>
+            <Grid container key={contactIndex} display={"flex"} spacing={2} >
+              <Grid display={'flex'} item sm={12}>
+              <Grid container>
+                <Grid item display={'flex'} sm={12}> 
                 <FormLabel>
                   <h4>Contact</h4>
                 </FormLabel>
+                {/* Remove contact field button code start */}
+                {contactIndex > 0 && (
+                        <Grid item display={"flex"}>
+                          <IconButton sx={{ color: "inherit" }}
+                            onClick={() =>
+                              removeContactField(contactIndex)}>
+                            <HighlightOffRoundedIcon />
+                          </IconButton>
+                        </Grid>
+                      )}
+                {/* Remove contact field button code end */}
+                </Grid>
+              </Grid>
               </Grid>
               <Grid item sm={12}>
                 <TextField
                   id="firstName"
                   name="firstName"
-                  value={element.firstName || ""}
+                  value={contact.firstName || ""}
                   label="First Name"
                   onChange={(e) => handleContactChange(contactIndex, e)}
                   variant="outlined"
@@ -100,7 +53,7 @@ function AddContact(props) {
                   name="lastName"
                   label="Last Name"
                   onChange={(e) => handleContactChange(contactIndex, e)}
-                  value={element.lastName || ""}
+                  value={contact.lastName || ""}
                   variant="outlined"
                   fullWidth
                 />
@@ -112,7 +65,7 @@ function AddContact(props) {
                 <TextField
                   id="position"
                   name="position"
-                  value={element.position || ""}
+                  value={contact.position || ""}
                   label="Position"
                   onChange={(e) => handleContactChange(contactIndex, e)}
                   variant="outlined"
@@ -122,52 +75,44 @@ function AddContact(props) {
               <Grid item sm={12}>
                 <FormLabel>Contact Methods</FormLabel>
               </Grid>
-              {element.contactMethods.map((element, contactMethodIndex) => {
+
+              {/* contact method fields code start */}
+              {contact.contactMethods.map((contactMethod, contactMethodIndex) => {
+                
                 return (
-                    
+                      
                   <Grid item sm={12} key={contactMethodIndex}>
                     <Grid display={"flex"} container spacing={2}>
                       <Grid item sm={2}>
                         <Select
                           labelId="contactMethodType"
                           id="contactMethodType"
-                          value={element.contactMethod || ""}
+                          value={contactMethod.contactMethodType || ""}
                           onChange={(e) =>
                             handleContactMethodChange(
                               contactIndex,
                               contactMethodIndex,
-                              e
-                            )
-                          }
+                              e)}
                           name="contactMethodType"
-                          fullWidth
-                        >
-                          <MenuItem value="phone">
-                            <PhoneIphoneIcon />
-                          </MenuItem>
-                          <MenuItem value="email">
-                            <EmailIcon />
-                          </MenuItem>
-                          <MenuItem value="fax">
-                            <FaxIcon />
-                          </MenuItem>
+                          fullWidth>
+
+                          <MenuItem value="phone"><PhoneIphoneIcon /></MenuItem>
+                          <MenuItem value="email"><EmailIcon /></MenuItem>
+                          <MenuItem value="fax"><FaxIcon /></MenuItem>
                         </Select>
                       </Grid>
                       <Grid item sm={3}>
                         <Select
                           labelId="code"
                           id="code"
-                          value={element.code || ""}
+                          value={contactMethod.code || ""}
                           name="code"
                           onChange={(e) =>
                             handleContactMethodChange(
                               contactIndex,
                               contactMethodIndex,
-                              e
-                            )
-                          }
-                          fullWidth
-                        >
+                              e)}
+                          fullWidth>
                           <MenuItem value="home">Home</MenuItem>
                           <MenuItem value="work">Work</MenuItem>
                         </Select>
@@ -177,20 +122,18 @@ function AddContact(props) {
                           type="text"
                           id="contactDetail"
                           name="contactDetail"
-                          value={element.contactDetail || ""}
+                          value={contactMethod.contactDetail || ""}
                           label="username@gmail.com"
                           onChange={(e) =>
                             handleContactMethodChange(
                               contactIndex,
                               contactMethodIndex,
-                              e
-                            )
-                          }
+                              e)}
                           variant="outlined"
                           sx={{ p: 0 }}
-                          fullWidth
-                        />
+                          fullWidth/>
                       </Grid>
+                      {/* contact method remove button start */}
                       {contactMethodIndex > 1 && (
                         <Grid item sm={1} display={"flex"}>
                           <IconButton
@@ -198,41 +141,70 @@ function AddContact(props) {
                             onClick={() =>
                               removeContactMethod(
                                 contactIndex,
-                                contactMethodIndex
-                              )
-                            }
-                          >
+                                contactMethodIndex)}>
                             <HighlightOffRoundedIcon />
                           </IconButton>
                         </Grid>
                       )}
-                      {contactMethodIndex ===
-                        contact[contactIndex].contactMethods.length - 1 && (
+                      {/* contact method remove button end */}
+
+              {/* Code for notification when contact method type is phone start*/}
+                      {contacts[contactIndex].contactMethods[contactMethodIndex].contactMethodType===('phone')&&
+                    <Grid display={'flex'} item sm={12}>
+                    <Grid>
+                        <Switch {...label} defaultChecked />
+                        <FormLabel>Service Notification</FormLabel>
+                    </Grid>
+                  </Grid>
+                  }
+                {/* Code for notification when contact method type is phone End*/}
+
+              {/* Code for notification when contact method type is Email start*/}
+                  {contacts[contactIndex].contactMethods[contactMethodIndex].contactMethodType===('email')&&
+                    <Grid display={'flex'} item sm={12}>
+                    <Grid>
+                        <Switch {...label} defaultChecked />
+                        <FormLabel>Service Notification</FormLabel>
+                    </Grid>
+                    <Grid>
+                        <Switch {...label} defaultChecked />
+                        <FormLabel>Billing Notification</FormLabel>
+                    </Grid>                  
+                  </Grid>
+                  }
+                  {/* Code for notification when contact method type is Email end*/}
+
+                  {/* Button for adding contact method start */}
+                  {contactMethodIndex ===
+                        contacts[contactIndex].contactMethods.length - 1 && (
                         <Grid item sm={12}>
                           <Button
                             onClick={() =>
                               addContactMethod(contactIndex, contactMethodIndex)
                             }
-                            sx={{ color: "inherit" }}
-                          >
+                            sx={{ color: "inherit" }}>
                             + Add Contact Method
                           </Button>
                         </Grid>
                       )}
+                      {/* Button for adding contact method start */}
                     </Grid>
                   </Grid>
                 );
               })}
-            {contactIndex===contact.length-1&&
+
+            {/* contact method fields code end */}
+
+            {/* Add contact method fields code start */}
+            {contactIndex===contacts.length-1&&
             <Grid item sm={12}>
                 <Button variant='outlined' color='inherit' onClick={() => addContactFields()} fullWidth>+ Add Contact</Button>
+            </Grid>}
+            {/* Add contact method fields code end */}
             </Grid>
-            }
-            </Grid>
-            
-          
         );
       })}
+      {/* contact field code end */}
     </>
   );
 }

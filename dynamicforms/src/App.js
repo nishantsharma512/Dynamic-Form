@@ -1,7 +1,7 @@
 import { Table } from '@mui/material';
 import { BrowserRouter,Routes,Route } from 'react-router-dom';
 import './App.css';
-import Form from './Components/Form';
+import Form from './Components/Form/Form';
 import Home from './Components/Home';
 import Navigation from './Components/Navigation';
 

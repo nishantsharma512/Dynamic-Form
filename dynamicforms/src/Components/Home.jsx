@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import React from 'react';
 import Table from './Table';
 import { Box } from '@mui/system';
-import Form from './Form';
+import Form from './Form/Form';
 function Home(props) {
  
     return (
