@@ -4,10 +4,10 @@ import CustomerInfo from './CustomerInfo';
 import CustomerLocationInfo from './CustomerLocationInfo';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
-function FormDrawer({toggleDrawer,selectedTab,handleTabChange,handleSubmit,handleCustomerInfoChange,addContactFields,addContactMethod,removeContactField,removeContactMethod,handleContactChange,handleContactMethodChange,contacts,slide}) {
+function FormDrawer({toggleDrawer,selectedTab,handleTabChange,handleSubmit,handleCustomerInfoChange,addContactFields,addContactMethod,removeContactField,removeContactMethod,handleContactChange,handleContactMethodChange,contacts,slide,handleSwitchChange,formErrors}) {
     const list = (anchor) => (
         <Box
-          sx={{ width: 600  }}
+          sx={{ width: "600px" }}
           role="presentation"
           
         >
@@ -32,9 +32,10 @@ function FormDrawer({toggleDrawer,selectedTab,handleTabChange,handleSubmit,handl
             {
             selectedTab===0 ?
             
-            <CustomerInfo handleCustomerInfoChange={handleCustomerInfoChange} addContactFields={addContactFields} addContactMethod={addContactMethod} removeContactField={removeContactField} removeContactMethod={removeContactMethod} handleContactChange={handleContactChange} handleContactMethodChange={handleContactMethodChange} contacts={contacts} toggleDrawer={toggleDrawer}/>:
+            <CustomerInfo handleCustomerInfoChange={handleCustomerInfoChange} addContactFields={addContactFields} addContactMethod={addContactMethod} removeContactField={removeContactField} removeContactMethod={removeContactMethod} handleContactChange={handleContactChange} handleContactMethodChange={handleContactMethodChange} contacts={contacts} toggleDrawer={toggleDrawer} handleSwitchChange={handleSwitchChange} formErrors={formErrors}/>:
             selectedTab===1 &&
             <CustomerLocationInfo/>
+            
             }
             </form>
           

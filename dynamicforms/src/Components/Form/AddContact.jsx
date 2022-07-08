@@ -5,10 +5,10 @@ import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import FaxIcon from "@mui/icons-material/Fax";
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 
-function AddContact({addContactFields,addContactMethod,removeContactField,removeContactMethod,handleContactChange,handleContactMethodChange,contacts}) {
+function AddContact({addContactFields,addContactMethod,removeContactField,removeContactMethod,handleContactChange,handleContactMethodChange,contacts,handleSwitchChange}) {
 
-  const label = { inputProps: { 'aria-label': 'Switch demo' }};
-
+  
+  const label = { inputProps: { 'aria-label': 'controlled' } };
   return (
     <>
     {/* contact field code start */}
@@ -119,11 +119,11 @@ function AddContact({addContactFields,addContactMethod,removeContactField,remove
                       </Grid>
                       <Grid item sm={contactMethodIndex < 2 ? 7 : 6}>
                         <TextField
-                          type="text"
+                          type={contactMethod.contactMethodType==="phone"?"number":contactMethod.contactMethodType==="email"?"email":contactMethod.contactMethodType==="fax"?"number":""}
                           id="contactDetail"
                           name="contactDetail"
                           value={contactMethod.contactDetail || ""}
-                          label="username@gmail.com"
+                          label={contactMethod.contactMethodType==="phone"?"Contact No.":contactMethod.contactMethodType==="email"?"username@gmail.com":contactMethod.contactMethodType==="fax"&&"Fax no."}
                           onChange={(e) =>
                             handleContactMethodChange(
                               contactIndex,
@@ -149,10 +149,10 @@ function AddContact({addContactFields,addContactMethod,removeContactField,remove
                       {/* contact method remove button end */}
 
               {/* Code for notification when contact method type is phone start*/}
-                      {contacts[contactIndex].contactMethods[contactMethodIndex].contactMethodType===('phone')&&
+                      {contactMethod.contactMethodType==='phone'&&
                     <Grid display={'flex'} item sm={12}>
                     <Grid>
-                        <Switch {...label} defaultChecked />
+                        <Switch {...label} checked={contactMethod.serviceNotification} name='serviceNotification' onChange={(e)=>handleSwitchChange(contactIndex,contactMethodIndex,e)} />
                         <FormLabel>Service Notification</FormLabel>
                     </Grid>
                   </Grid>
@@ -160,14 +160,15 @@ function AddContact({addContactFields,addContactMethod,removeContactField,remove
                 {/* Code for notification when contact method type is phone End*/}
 
               {/* Code for notification when contact method type is Email start*/}
-                  {contacts[contactIndex].contactMethods[contactMethodIndex].contactMethodType===('email')&&
+                  {contactMethod.contactMethodType==='email'&&
                     <Grid display={'flex'} item sm={12}>
                     <Grid>
-                        <Switch {...label} defaultChecked />
+                        <Switch  {...label} name='serviceNotification'   checked={contactMethod.serviceNotification} onChange={(e)=>handleSwitchChange(contactIndex,contactMethodIndex,e)} 
+                         />
                         <FormLabel>Service Notification</FormLabel>
                     </Grid>
                     <Grid>
-                        <Switch {...label} defaultChecked />
+                        <Switch {...label} name='billingNotification' checked={contactMethod.billingNotification} onChange={(e)=>handleSwitchChange(contactIndex,contactMethodIndex,e)}/>
                         <FormLabel>Billing Notification</FormLabel>
                     </Grid>                  
                   </Grid>
