@@ -1,5 +1,5 @@
 import {Button, Grid} from '@mui/material';
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useRef } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import FormDrawer from './FormDrawer';
 function Form(props) {
@@ -17,10 +17,12 @@ function Form(props) {
                       return {...state,customerInfo:action.payload}
                       case "setSelectedTab":
                         return {...state,selectedTab:action.payload}
-                        case "setFormErrors":
-                          return {...state,formErrors:action.payload}
-                          case "setIsSubmit":
-                            return{...state,isSubmit:!state.isSubmit}
+                        case "setErrors":
+                          return {...state,errors:action.payload}
+                          case "setDirty":
+                            return {...state,dirty:action.payload}
+                            case "setMessage":
+                              return {...state,message:action.payload}
                       default: return state
           }
         }
@@ -41,10 +43,65 @@ function Form(props) {
             zipCode:"",
         },
         selectedTab:0,
-        formErrors:{},
-        isSubmit:false
+        errors:{
+          customerName:"",
+          streetAddress:"",
+          city:"",
+          state:"",
+          zipCode:"",
+          contacts:[{firstName:"",lastName:"",position:"",contactMethods:[
+            { contactMethodType: "", code : "",contactDetail:"",serviceNotification:false,billingNotification:false},
+            { contactMethodType: "", code : "",contactDetail:"",serviceNotification:false,billingNotification:false}
+            ]}]
+        },
+        dirty:{
+          customerName:false,
+          streetAddress:false,
+          city:false,
+          state:false,
+          zipCode:false,
+          contacts:[{firstName:false,lastName:false,position:false,contactMethods:[
+            { contactMethodType: false, code : false,contactDetail:false,serviceNotification:false,billingNotification:false},
+            { contactMethodType: false, code : false,contactDetail:false,serviceNotification:false,billingNotification:false}
+            ]}]
+        },
+        message:""
         })
         
+        const inputField=useRef(null)
+
+        
+        const validate=()=>{
+          let errorsData={};
+          
+          if(!state.customerInfo.customerName)
+          {
+            errorsData.customerName="Please Enter Customer Name"
+          }
+          dispatch({type:"setErrors",payload:errorsData})
+        }
+        /* useEffect(validate,[state]) */
+        useEffect(validate,[state.customerInfo])
+        let isValid=()=>{
+          let valid=true;
+          for(let error in state.errors){
+              if(state.errors[error].length>0){
+                  valid=false;
+              }
+          }
+          return valid;
+      }
+
+      const onBlurHandle=(event)=>{
+        const {name}=event.target;
+        dispatch({type:"setDirty",payload:{...state.dirty,[name]:true}})
+        /* setDirty((dirty)=>({
+            ...dirty,
+            [name]:true
+        })) */
+        validate()
+    }
+
       const toggleDrawer = (anchor, open) => {
         dispatch({type:"slideDrawer",payload:{
           [anchor]: open
@@ -141,11 +198,23 @@ function Form(props) {
   };
   /* handleChange for contact fields end */
 
+
+
+
   /* handleSubmit code start */
     const handleSubmit=(e)=>{
         e.preventDefault()
-        dispatch({type:"setFormErrors",payload:validate(state.customerInfo)})
-        dispatch({type:"isSubmit"})
+        if(isValid()){
+       console.log(state)
+      }
+      else
+      {
+        const currValue=inputField.current.value;
+        if(!currValue){
+          Object.keys(state.dirty).forEach((item)=>state.dirty[item]=true)
+        }
+        dispatch({type:"setMessage",payload:"Please resolve errors in the form"})
+      }
         // validate(state.customerInfo)
       // console.log(state.customerInfo,state.contacts)
       
@@ -157,39 +226,7 @@ function Form(props) {
     }
     
 
-    useEffect(()=>{
-      console.log(state.formErrors)
-        if(Object.keys(state.formErrors).length===0 && state.isSubmit)
-        {
-          console.log(state.customerInfo)
-        }
-    },[state.formErrors,state.customerInfo,state.isSubmit])
-
-
-    const validate=(values)=>{
-      const errors={}
-      if(!values.customerName)
-      {
-        errors.customerName="Customer name is required!"
-      }
-      if(!values.streetAddress)
-      {
-        errors.streetAddress="Street Address is required!"
-      }
-      if(!values.city)
-      {
-        errors.city="City name is required!"
-      }
-      if(!values.state)
-      {
-        errors.state="Required!"
-      }
-      if(!values.zipCode)
-      {
-        errors.zipCode="Required!"
-      }
-      return errors
-     }
+    
     return (
         <>
         <Grid container>
@@ -198,7 +235,7 @@ function Form(props) {
             <Button  onClick={()=>toggleDrawer("right", true)} variant="outlined"  startIcon={<AddIcon />}>
                 Add New Customer
               </Button>
-            <FormDrawer selectedTab={state.selectedTab} toggleDrawer={toggleDrawer} handleCustomerInfoChange={handleCustomerInfoChange} handleTabChange={handleTabChange} handleSubmit={handleSubmit} addContactFields={addContactFields} addContactMethod={addContactMethod} removeContactField={removeContactField} removeContactMethod={removeContactMethod} handleContactChange={handleContactChange} handleContactMethodChange={handleContactMethodChange} contacts={state.contacts} slide={state.slide} handleSwitchChange={handleSwitchChange} formErrors={state.formErrors} />
+            <FormDrawer selectedTab={state.selectedTab} toggleDrawer={toggleDrawer} handleCustomerInfoChange={handleCustomerInfoChange} handleTabChange={handleTabChange} handleSubmit={handleSubmit} addContactFields={addContactFields} addContactMethod={addContactMethod} removeContactField={removeContactField} removeContactMethod={removeContactMethod} handleContactChange={handleContactChange} handleContactMethodChange={handleContactMethodChange} contacts={state.contacts} slide={state.slide} handleSwitchChange={handleSwitchChange} formErrors={state.formErrors} inputField={inputField} dirty={state.dirty} errors={state.errors} onBlurHandle={onBlurHandle} />
             </Grid>
         </Grid>
         </>

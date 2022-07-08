@@ -4,7 +4,7 @@ import CustomerInfo from './CustomerInfo';
 import CustomerLocationInfo from './CustomerLocationInfo';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
-function FormDrawer({toggleDrawer,selectedTab,handleTabChange,handleSubmit,handleCustomerInfoChange,addContactFields,addContactMethod,removeContactField,removeContactMethod,handleContactChange,handleContactMethodChange,contacts,slide,handleSwitchChange,formErrors}) {
+function FormDrawer({toggleDrawer,selectedTab,handleTabChange,handleSubmit,handleCustomerInfoChange,addContactFields,addContactMethod,removeContactField,removeContactMethod,handleContactChange,handleContactMethodChange,contacts,slide,handleSwitchChange,formErrors,inputField,dirty,errors,onBlurHandle}) {
     const list = (anchor) => (
         <Box
           sx={{ width: "600px" }}
@@ -32,7 +32,7 @@ function FormDrawer({toggleDrawer,selectedTab,handleTabChange,handleSubmit,handl
             {
             selectedTab===0 ?
             
-            <CustomerInfo handleCustomerInfoChange={handleCustomerInfoChange} addContactFields={addContactFields} addContactMethod={addContactMethod} removeContactField={removeContactField} removeContactMethod={removeContactMethod} handleContactChange={handleContactChange} handleContactMethodChange={handleContactMethodChange} contacts={contacts} toggleDrawer={toggleDrawer} handleSwitchChange={handleSwitchChange} formErrors={formErrors}/>:
+            <CustomerInfo handleCustomerInfoChange={handleCustomerInfoChange} addContactFields={addContactFields} addContactMethod={addContactMethod} removeContactField={removeContactField} removeContactMethod={removeContactMethod} handleContactChange={handleContactChange} handleContactMethodChange={handleContactMethodChange} contacts={contacts} toggleDrawer={toggleDrawer} handleSwitchChange={handleSwitchChange} formErrors={formErrors} inputField={inputField} dirty={dirty} errors={errors} onBlurHandle={onBlurHandle}/>:
             selectedTab===1 &&
             <CustomerLocationInfo/>
             
